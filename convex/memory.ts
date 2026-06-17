@@ -33,6 +33,15 @@ export const recentShared = query({
   },
 });
 
+export const clearSharedMemory = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const all = await ctx.db.query("sharedCases").collect();
+    await Promise.all(all.map((doc) => ctx.db.delete(doc._id)));
+    return { deleted: all.length };
+  },
+});
+
 export const findSimilar = query({
   args: { bugDescription: v.string() },
   handler: async (ctx, { bugDescription }) => {

@@ -68,6 +68,15 @@ export const getById = query({
   },
 });
 
+export const clearAll = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const all = await ctx.db.query("cases").collect();
+    await Promise.all(all.map((doc) => ctx.db.delete(doc._id)));
+    return { deleted: all.length };
+  },
+});
+
 export const listByDevice = query({
   args: { deviceId: v.string() },
   handler: async (ctx, { deviceId }) => {
