@@ -154,6 +154,8 @@ export async function POST(req: NextRequest) {
         }
       } catch (err) {
         const message = err instanceof Error ? err.message : "Unknown error";
+        const stack = err instanceof Error ? err.stack : "";
+        console.error("[investigate] error:", message, stack);
         enqueue(encodeEvent({ type: "error", message }));
       } finally {
         close();
