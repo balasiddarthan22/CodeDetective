@@ -25,11 +25,17 @@ export async function addMemory(
   containerTag: string,
   metadata?: Record<string, unknown>
 ): Promise<string> {
-  const res = await fetch(`${BASE}/documents`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({ content, containerTag, metadata }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}/documents`, {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({ content, containerTag, metadata }),
+    });
+  } catch (err) {
+    console.error(`Supermemory addMemory fetch failed (network):`, err);
+    return "";
+  }
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
     console.error(`Supermemory add failed: ${res.status}`);
@@ -43,11 +49,17 @@ export async function searchMemory(
   containerTag: string,
   limit = 3
 ): Promise<MemoryHit[]> {
-  const res = await fetch(`${BASE}/search`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({ query, containerTag, limit }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}/search`, {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({ query, containerTag, limit }),
+    });
+  } catch (err) {
+    console.error(`Supermemory fetch failed (network):`, err);
+    return [];
+  }
   if (!res.ok) {
     console.error(`Supermemory search failed: ${res.status}`);
     return [];
